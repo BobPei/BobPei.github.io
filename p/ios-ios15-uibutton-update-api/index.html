@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='还在为UIButton上图下字、上字下图、左图右字、左字右图而烦恼吗？iOS15，苹果爸爸终于提供了相应的API！来，我们一起来看看！'>
+<title>iOS15终于迎来了UIButton的这个改动！</title>
+
+<link rel='canonical' href='https://example.com/p/ios-ios15-uibutton-update-api/'>
+
+<link rel="stylesheet" href="/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css"><meta property='og:title' content='iOS15终于迎来了UIButton的这个改动！'>
+<meta property='og:description' content='还在为UIButton上图下字、上字下图、左图右字、左字右图而烦恼吗？iOS15，苹果爸爸终于提供了相应的API！来，我们一起来看看！'>
+<meta property='og:url' content='https://example.com/p/ios-ios15-uibutton-update-api/'>
+<meta property='og:site_name' content='BobPei'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2021-10-16T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2021-10-16T00:00:00&#43;00:00'/><meta property='og:image' content='https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/BlogCover/2021/20211016.jpeg' />
+<meta name="twitter:title" content="iOS15终于迎来了UIButton的这个改动！">
+<meta name="twitter:description" content="还在为UIButton上图下字、上字下图、左图右字、左字右图而烦恼吗？iOS15，苹果爸爸终于提供了相应的API！来，我们一起来看看！"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/BlogCover/2021/20211016.jpeg' />
+    <link rel="shortcut icon" href="img/avatar.png" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hucb9c9ffb845db07b7d3d94a22ab153fb_80061_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">BobPei</a></h1>
+            <h2 class="site-description">一日为码农，终身撸不停.</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/CaiJimmy/hugo-theme-stack'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://twitter.com'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E4%B9%A6%E7%AD%BE/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>书签</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>暗色模式</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/ios-ios15-uibutton-update-api/">
+                
+                    <img src="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/BlogCover/2021/20211016.jpeg" loading="lazy" alt="Featured image of post iOS15终于迎来了UIButton的这个改动！" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/ios/" style="background-color: #000000; color: #fff;">
+                iOS
+            </a>
+        
+            <a href="/categories/api/" style="background-color: #FFDAB9; color: #fff;">
+                API
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/ios-ios15-uibutton-update-api/">iOS15终于迎来了UIButton的这个改动！</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            还在为UIButton上图下字、上字下图、左图右字、左字右图而烦恼吗？iOS15，苹果爸爸终于提供了相应的API！来，我们一起来看看！
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Oct 16, 2021</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 3 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>截止目前（<code>2021-10-16</code>）为止，要想实现下面的几种<code>button</code>样式（这里要考虑图片和文字间距），我所知道的方案有两种：</p>
+<ol>
+<li>
+<p>给<code>UIButton</code>添加分类</p>
+</li>
+<li>
+<p>自定义<code>UIButton</code></p>
+</li>
+</ol>
+<p>而在实际开发中，我们使用 <strong>方案1</strong> 应该是最多的！</p>
+<p><img src="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/iOS/API/iOS15-UIButton/001.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<p>自我参加工作（<code>2015-06</code>）以来，对于<code>UIButton</code>如上图的需求就一直有，而且还有很多！说实话，我也一直困惑，苹果爸爸问什么不支持一下呢？</p>
+<p>也许是有人不停地给苹果爸爸提<code>issue</code>，
+也许是苹果爸爸也遇到大量的如此需求，
+也许苹果爸爸做了统计发现几乎所有<code>APP</code>都有<code>UIButton</code>这类<code>Categroy</code>（<code>Swift</code>是<code>Extension</code>）,
+也许苹果爸爸终于闲了有时间管了，
+也许&hellip;，
+不管怎么说，<strong><code>iOS15</code>，苹果爸爸支持了！而且<code>API</code>也如预期的那样简单</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-Swift" data-lang="Swift"><span class="line"><span class="cl"><span class="kd">var</span> <span class="nv">conf</span> <span class="p">=</span> <span class="n">UIButton</span><span class="p">.</span><span class="n">Configuration</span><span class="p">.</span><span class="n">borderedTinted</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="c1">/// 设置图片的摆放（图片在上，则文字在下）</span>
+</span></span><span class="line"><span class="cl"><span class="n">conf</span><span class="p">.</span><span class="n">imagePlacement</span> <span class="p">=</span> <span class="p">.</span><span class="n">top</span>
+</span></span><span class="line"><span class="cl"><span class="c1">/// 设置图片和文字的间距</span>
+</span></span><span class="line"><span class="cl"><span class="n">conf</span><span class="p">.</span><span class="n">imagePadding</span> <span class="p">=</span> <span class="mi">10</span>
+</span></span><span class="line"><span class="cl"><span class="kd">let</span> <span class="nv">bt</span> <span class="p">=</span> <span class="n">UIButton</span><span class="p">.</span><span class="kd">init</span><span class="p">(</span><span class="n">configuration</span><span class="p">:</span> <span class="n">conf</span><span class="p">,</span> <span class="n">primaryAction</span><span class="p">:</span> <span class="kc">nil</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>插一句：对于<code>configuration</code>这样的<code>API</code>设计，我是非常认可的，一看就知道是干什么用的！感觉苹果爸爸也有意如此设计，比如<code>iOS14</code>开始的的<code>PHPickerConfiguration</code>等。</p>
+</blockquote>
+<p>而我能发现这个，源自今天（<code>2021-10-16</code>）下午，打算用<code>Swift</code>重写老项目（《<strong>酷乐潮玩</strong>》）的一个推荐列表页，其中<code>cell</code>上有如下几个按钮，我想参考<code>OC</code>写的<code>UIButton</code>的<code>category</code>，也写个<code>Swift</code>版的：</p>
+<p><img src="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/iOS/API/iOS15-UIButton/002.jpg"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<p><img src="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/iOS/API/iOS15-UIButton/003.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<p><img src="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/iOS/API/iOS15-UIButton/004.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<p>可是，在敲<code>titleedg</code>时，竟提示<code>'titleEdgeInsets' will be deprecated in iOS 15.0</code>。这瞬间激起了我的兴趣，于是点击进去一探究竟！</p>
+<p><img src="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/iOS/API/iOS15-UIButton/005.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<p><code>Swift</code>版<code>UIButtonConfiguration</code>：
+<img src="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/iOS/API/iOS15-UIButton/006.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<p><code>Objective-C</code>版<code>UIButtonConfiguration</code>：
+<img src="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/iOS/API/iOS15-UIButton/007.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<p>于是，我粗略地写了个<code>demo</code>验证一下，最终效果图：</p>
+<p><img src="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/iOS/API/iOS15-UIButton/008.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<p>具体代码如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-Swift" data-lang="Swift"><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">ViewController</span><span class="p">:</span> <span class="n">UIViewController</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kr">override</span> <span class="kd">func</span> <span class="nf">viewDidLoad</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kc">super</span><span class="p">.</span><span class="n">viewDidLoad</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// Do any additional setup after loading the view.</span>
+</span></span><span class="line"><span class="cl">        <span class="n">view</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="p">=</span> <span class="p">.</span><span class="n">white</span>
+</span></span><span class="line"><span class="cl">        <span class="n">test</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="kd">func</span> <span class="nf">test</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kd">var</span> <span class="nv">conf1</span> <span class="p">=</span> <span class="n">UIButton</span><span class="p">.</span><span class="n">Configuration</span><span class="p">.</span><span class="n">plain</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="n">conf1</span><span class="p">.</span><span class="n">title</span> <span class="p">=</span> <span class="s">&#34;点赞&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">conf1</span><span class="p">.</span><span class="n">image</span> <span class="p">=</span> <span class="n">UIImage</span><span class="p">(</span><span class="n">named</span><span class="p">:</span> <span class="s">&#34;liked&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">conf1</span><span class="p">.</span><span class="n">imagePlacement</span> <span class="p">=</span> <span class="p">.</span><span class="n">leading</span>
+</span></span><span class="line"><span class="cl">        <span class="n">conf1</span><span class="p">.</span><span class="n">imagePadding</span> <span class="p">=</span> <span class="mi">10</span>
+</span></span><span class="line"><span class="cl">        <span class="kd">let</span> <span class="nv">bt1</span> <span class="p">=</span> <span class="n">UIButton</span><span class="p">.</span><span class="kd">init</span><span class="p">(</span><span class="n">configuration</span><span class="p">:</span> <span class="n">conf1</span><span class="p">,</span> <span class="n">primaryAction</span><span class="p">:</span> <span class="kc">nil</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="kd">var</span> <span class="nv">conf2</span> <span class="p">=</span> <span class="n">UIButton</span><span class="p">.</span><span class="n">Configuration</span><span class="p">.</span><span class="n">bordered</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="n">conf2</span><span class="p">.</span><span class="n">title</span> <span class="p">=</span> <span class="s">&#34;点赞&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">conf2</span><span class="p">.</span><span class="n">image</span> <span class="p">=</span> <span class="n">UIImage</span><span class="p">(</span><span class="n">named</span><span class="p">:</span> <span class="s">&#34;liked&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">conf2</span><span class="p">.</span><span class="n">imagePlacement</span> <span class="p">=</span> <span class="p">.</span><span class="n">trailing</span>
+</span></span><span class="line"><span class="cl">        <span class="n">conf2</span><span class="p">.</span><span class="n">imagePadding</span> <span class="p">=</span> <span class="mi">40</span>
+</span></span><span class="line"><span class="cl">        <span class="kd">let</span> <span class="nv">bt2</span> <span class="p">=</span> <span class="n">UIButton</span><span class="p">.</span><span class="kd">init</span><span class="p">(</span><span class="n">configuration</span><span class="p">:</span> <span class="n">conf2</span><span class="p">,</span> <span class="n">primaryAction</span><span class="p">:</span> <span class="kc">nil</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="kd">var</span> <span class="nv">conf3</span> <span class="p">=</span> <span class="n">UIButton</span><span class="p">.</span><span class="n">Configuration</span><span class="p">.</span><span class="n">borderedTinted</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="n">conf3</span><span class="p">.</span><span class="n">title</span> <span class="p">=</span> <span class="s">&#34;点赞&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">conf3</span><span class="p">.</span><span class="n">image</span> <span class="p">=</span> <span class="n">UIImage</span><span class="p">(</span><span class="n">named</span><span class="p">:</span> <span class="s">&#34;liked&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">conf3</span><span class="p">.</span><span class="n">imagePlacement</span> <span class="p">=</span> <span class="p">.</span><span class="n">top</span>
+</span></span><span class="line"><span class="cl">        <span class="n">conf3</span><span class="p">.</span><span class="n">imagePadding</span> <span class="p">=</span> <span class="mi">10</span>
+</span></span><span class="line"><span class="cl">        <span class="kd">let</span> <span class="nv">bt3</span> <span class="p">=</span> <span class="n">UIButton</span><span class="p">.</span><span class="kd">init</span><span class="p">(</span><span class="n">configuration</span><span class="p">:</span> <span class="n">conf3</span><span class="p">,</span> <span class="n">primaryAction</span><span class="p">:</span> <span class="kc">nil</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="kd">var</span> <span class="nv">conf4</span> <span class="p">=</span> <span class="n">UIButton</span><span class="p">.</span><span class="n">Configuration</span><span class="p">.</span><span class="n">gray</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="n">conf4</span><span class="p">.</span><span class="n">title</span> <span class="p">=</span> <span class="s">&#34;点赞&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">conf4</span><span class="p">.</span><span class="n">image</span> <span class="p">=</span> <span class="n">UIImage</span><span class="p">(</span><span class="n">named</span><span class="p">:</span> <span class="s">&#34;liked&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">conf4</span><span class="p">.</span><span class="n">imagePlacement</span> <span class="p">=</span> <span class="p">.</span><span class="n">bottom</span>
+</span></span><span class="line"><span class="cl">        <span class="n">conf4</span><span class="p">.</span><span class="n">imagePadding</span> <span class="p">=</span> <span class="mi">10</span>
+</span></span><span class="line"><span class="cl">        <span class="kd">let</span> <span class="nv">bt4</span> <span class="p">=</span> <span class="n">UIButton</span><span class="p">.</span><span class="kd">init</span><span class="p">(</span><span class="n">configuration</span><span class="p">:</span> <span class="n">conf4</span><span class="p">,</span> <span class="n">primaryAction</span><span class="p">:</span> <span class="kc">nil</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="n">bt1</span><span class="p">.</span><span class="n">frame</span> <span class="p">=</span> <span class="n">CGRect</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="mi">80</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">bt2</span><span class="p">.</span><span class="n">frame</span> <span class="p">=</span> <span class="n">CGRect</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="mi">150</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="mi">80</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">bt3</span><span class="p">.</span><span class="n">frame</span> <span class="p">=</span> <span class="n">CGRect</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="mi">230</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="mi">80</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">bt4</span><span class="p">.</span><span class="n">frame</span> <span class="p">=</span> <span class="n">CGRect</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="mi">230</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="mi">80</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="n">view</span><span class="p">.</span><span class="n">addSubview</span><span class="p">(</span><span class="n">bt1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">view</span><span class="p">.</span><span class="n">addSubview</span><span class="p">(</span><span class="n">bt2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">view</span><span class="p">.</span><span class="n">addSubview</span><span class="p">(</span><span class="n">bt3</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">view</span><span class="p">.</span><span class="n">addSubview</span><span class="p">(</span><span class="n">bt4</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>最后，话又说回来了，目前我们的<code>APP</code>不可能是从<code>iOS15</code>开始的，估计大多数是从<code>iOS11</code>开始的，还有一部分是从<code>iOS9</code>开始，也有一部分是从<code>iOS13</code>开始的，所以 <strong>做好兼容还是很有必要的</strong>！</p>
+<p>而更多关于<code>UIButton</code>的新知，请自行查看<code>API</code>学习，总体感觉：<strong>UIButton更丰富多彩了</strong>！</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">相关文章</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/p/%E5%AD%A6%E4%BC%9Anscharacterset%E5%86%8D%E4%B9%9F%E4%B8%8D%E6%80%95%E5%90%84%E7%A7%8D%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%A4%84%E7%90%86/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/BlogCover/2016/20161213.jpeg" loading="lazy" data-key="" data-hash="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/BlogCover/2016/20161213.jpeg"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">学会NSCharacterSet，再也不怕各种字符串处理！</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/p/20230606/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/BlogCover/2021/20210502.jpeg" loading="lazy" data-key="20230606" data-hash="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/BlogCover/2021/20210502.jpeg"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">设置符号断点（Symbolic Breakpoint）的几种方式</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/p/20210502/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/BlogCover/2021/20210502.jpeg" loading="lazy" data-key="20210502" data-hash="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/BlogCover/2021/20210502.jpeg"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">iOS代码块（CodeSnippets）你值得拥有：大大提升编码效率</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/p/ios%E9%93%BE%E5%BC%8F%E5%88%9B%E5%BB%BAui%E7%BB%88%E7%BB%93%E8%80%85-ppmaker/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/BlogCover/2018/20180509.jpeg" loading="lazy" data-key="" data-hash="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/BlogCover/2018/20180509.jpeg"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">iOS链式创建UI终结者 ➜ PPMaker</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/p/20180308/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/BlogCover/2018/20180308.jpeg" loading="lazy" data-key="20180308" data-hash="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/BlogCover/2018/20180308.jpeg"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">浅读MJRefresh后自定义了个UIScrollView监听滚动的block属性</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "hugo-theme-stack" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2020 - 
+        
+        2023 BobPei
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

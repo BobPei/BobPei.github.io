@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='某天，闲来无聊点击微信通讯录右边的索引（具体操作如下：打开微信&amp;mdash;通讯录，然后右手点击某个索引，手指别松开，然后左手点击某个联系人'>
+<title>runtime实战系列（一）--- 微信通讯录bug的完美解决</title>
+
+<link rel='canonical' href='https://example.com/p/20171231/'>
+
+<link rel="stylesheet" href="/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css"><meta property='og:title' content='runtime实战系列（一）--- 微信通讯录bug的完美解决'>
+<meta property='og:description' content='某天，闲来无聊点击微信通讯录右边的索引（具体操作如下：打开微信&amp;mdash;通讯录，然后右手点击某个索引，手指别松开，然后左手点击某个联系人'>
+<meta property='og:url' content='https://example.com/p/20171231/'>
+<meta property='og:site_name' content='BobPei'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='runtime' /><meta property='article:published_time' content='2017-12-31T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2017-12-31T00:00:00&#43;00:00'/><meta property='og:image' content='https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/BlogCover/2017/20171231.jpeg' />
+<meta name="twitter:title" content="runtime实战系列（一）--- 微信通讯录bug的完美解决">
+<meta name="twitter:description" content="某天，闲来无聊点击微信通讯录右边的索引（具体操作如下：打开微信&amp;mdash;通讯录，然后右手点击某个索引，手指别松开，然后左手点击某个联系人"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/BlogCover/2017/20171231.jpeg' />
+    <link rel="shortcut icon" href="img/avatar.png" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hucb9c9ffb845db07b7d3d94a22ab153fb_80061_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">BobPei</a></h1>
+            <h2 class="site-description">一日为码农，终身撸不停.</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/CaiJimmy/hugo-theme-stack'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://twitter.com'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E4%B9%A6%E7%AD%BE/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>书签</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>暗色模式</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li>
+      <ol>
+        <li><a href="#第一步-创建ppsectiontitleindexview继承自uiview并声明代理ppsectiontitleindexviewdelegate代码如下">第一步 ：创建<code>PPSectionTitleIndexView</code>继承自<code>UIView</code>，并声明代理<code>PPSectionTitleIndexViewDelegate</code>，代码如下：</a></li>
+        <li><a href="#第二步设置ppsectiontitleindexview">第二步：设置<code>PPSectionTitleIndexView</code></a></li>
+        <li><a href="#第三步解决bug">第三步：解决<code>Bug</code></a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/20171231/">
+                
+                    <img src="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/BlogCover/2017/20171231.jpeg" loading="lazy" alt="Featured image of post runtime实战系列（一）--- 微信通讯录bug的完美解决" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/ios/" style="background-color: #000000; color: #fff;">
+                iOS
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/20171231/">runtime实战系列（一）--- 微信通讯录bug的完美解决</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Dec 31, 2017</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 7 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <blockquote>
+<p>某天，闲来无聊点击微信通讯录右边的索引（具体操作如下：<strong>打开微信&mdash;通讯录，然后右手点击某个索引，手指别松开，然后左手点击某个联系人<code>cell</code>，跳转后再返回，你刚才长按的放大索引还在，并且再滑动，索引对应字母也不变化，索引视图卡住。</strong>），发现了这个<code>bug</code>（我都滑动到L了，放大的索引还是<code>M</code>），如下：</p>
+</blockquote>
+<p><img src="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/UGC/20171231/001.gif"
+	
+	
+	
+	loading="lazy"
+	
+		alt="微信通讯录bug.gif"
+	
+	
+></p>
+<p>由于自己的项目也有类似的功能，同样操作，也有同样的<code>bug</code>，于是就赶紧修复一下。</p>
+<p><strong>问题有了，解决问题的关键就是找到原因并给出合理的解决方案。</strong></p>
+<p><strong>Why?</strong></p>
+<p><strong>Why?</strong></p>
+<p><strong>Why?</strong></p>
+<p>原因：<strong>放大的索引视图在显示的情况下点击<code>tableViewCell</code>没有隐藏掉.</strong></p>
+<p>解决方案：<strong>在<code>didSelectRowAtIndexPath</code>方法里隐藏(<code>or</code>移除)放大了的索引视图。</strong></p>
+<ul>
+<li><strong>方案一</strong>：用通知，<code>didSelectRowAtIndexPath</code>调用的时候给**<code>PPSectionTitleIndexView</code>**发个通知。</li>
+<li><strong>方案二</strong> ：用<code>runtime</code>，<code>didSelectRowAtIndexPath</code>调用的时候给<code>UItableView</code>添加一个<code>block</code>,**<code>PPSectionTitleIndexView</code>**里面的<code>tableView</code>实现<code>block</code>。</li>
+</ul>
+<p>两种方案对比：</p>
+<p><strong>方案一</strong>: 需要每次调用<code>didSelectRowAtIndexPath</code>时都要发送一个通知；</p>
+<p><strong>方案二</strong>: 什么也不用做。所以，当然方案二更好。</p>
+<p>扯了那么多，现在进入实战。</p>
+<h3 id="第一步-创建ppsectiontitleindexview继承自uiview并声明代理ppsectiontitleindexviewdelegate代码如下">第一步 ：创建<code>PPSectionTitleIndexView</code>继承自<code>UIView</code>，并声明代理<code>PPSectionTitleIndexViewDelegate</code>，代码如下：</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-Objective-C" data-lang="Objective-C"><span class="line"><span class="cl"><span class="cp">#import &lt;UIKit/UIKit.h&gt;
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="n">NS_ASSUME_NONNULL_BEGIN</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">@protocol</span> <span class="nc">PPSectionTitleIndexViewDelegate</span> <span class="o">&lt;</span><span class="n">NSObject</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">@required</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> 与PPSectionTitleIndexView相关联的view（UITableView）
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="o">-</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="n">sectionTitleIndexViewAssociatedView</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> section的titles
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="p">-(</span><span class="n">NSArray</span><span class="o">&lt;</span><span class="n">NSString</span> <span class="o">*&gt;</span> <span class="o">*</span><span class="p">)</span><span class="nf">sectionTitleIndexViewSectionTitles</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">@end</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">@interface</span> <span class="nc">PPSectionTitleIndexView</span> : <span class="nc">UIView</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/** 索引是否正在显示 */</span>
+</span></span><span class="line"><span class="cl"><span class="k">@property</span><span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span><span class="k">assign</span><span class="p">,</span><span class="k">readonly</span><span class="p">)</span> <span class="kt">BOOL</span> <span class="n">isShowingIndex</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//这三种不能用于初始化
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">-(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">initWithFrame:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">frame</span> <span class="n">NS_UNAVAILABLE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">-(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">init</span> <span class="n">NS_UNAVAILABLE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">+(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">new</span> <span class="n">NS_UNAVAILABLE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">-(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">initWithFrame:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">frame</span> <span class="nf">delegate:</span><span class="p">(</span><span class="n">_Nullable</span> <span class="kt">id</span><span class="o">&lt;</span><span class="n">PPSectionTitleIndexViewDelegate</span><span class="o">&gt;</span><span class="p">)</span><span class="nv">delegate</span> <span class="n">NS_DESIGNATED_INITIALIZER</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">+(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">pp_sectionTitleIndexViewWithFrame:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">frame</span> <span class="nf">delegate:</span><span class="p">(</span><span class="n">_Nullable</span> <span class="kt">id</span><span class="o">&lt;</span><span class="n">PPSectionTitleIndexViewDelegate</span><span class="o">&gt;</span><span class="p">)</span><span class="nv">delegate</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">@end</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">NS_ASSUME_NONNULL_END</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="第二步设置ppsectiontitleindexview">第二步：设置<code>PPSectionTitleIndexView</code></h3>
+<blockquote>
+<p>思路：每个索引用<code>UIButton</code>,当前点击的放大索引用<code>UILabel</code>显示。</p>
+</blockquote>
+<p><strong>核心代码</strong>如下：</p>
+<p>1.创建<code>UI</code>的</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-Objective-C" data-lang="Objective-C"><span class="line"><span class="cl"><span class="p">-(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">initWithFrame:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">frame</span> <span class="nf">delegate:</span><span class="p">(</span><span class="kt">id</span><span class="o">&lt;</span><span class="n">PPSectionTitleIndexViewDelegate</span><span class="o">&gt;</span><span class="p">)</span><span class="nv">delegate</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">self</span> <span class="o">=</span> <span class="p">[</span><span class="nb">super</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">frame</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nb">self</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">self</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">delegate</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">[</span><span class="nb">self</span> <span class="n">creatUI</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">-(</span><span class="kt">void</span><span class="p">)</span><span class="nf">creatUI</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//1. 先检验必须实现的协议有没有实现
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">[</span><span class="nb">self</span> <span class="n">verifyRequiredProtocol</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//2. 创建索引UI
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">[</span><span class="nb">self</span> <span class="n">creatIndexUI</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//3. 添加平移手势
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">[</span><span class="nb">self</span> <span class="n">addPanGesture</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//此处只贴出来index的button创建代码
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span> <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="nb">self</span><span class="p">.</span><span class="n">indexTitles</span><span class="p">.</span><span class="n">count</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">UIButton</span> <span class="o">*</span><span class="n">item</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIButton</span> <span class="nl">buttonWithType</span><span class="p">:</span><span class="n">UIButtonTypeCustom</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">        <span class="p">[</span><span class="nb">self</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">item</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">        <span class="n">item</span><span class="p">.</span><span class="n">tag</span> <span class="o">=</span> <span class="mi">100</span><span class="o">+</span><span class="n">i</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">item</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">topOrBottomMargin</span><span class="o">+</span><span class="p">(</span><span class="n">oneIndexWidth</span><span class="o">+</span><span class="n">itemMargin</span><span class="p">)</span><span class="o">*</span><span class="n">i</span><span class="p">,</span> <span class="n">indexVWidth</span><span class="p">,</span> <span class="n">oneIndexWidth</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="n">item</span><span class="p">.</span><span class="n">titleEdgeInsets</span> <span class="o">=</span> <span class="n">UIEdgeInsetsMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">self</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="o">-</span><span class="n">oneIndexWidth</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">[</span><span class="n">item</span> <span class="nl">setTitle</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">indexTitles</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="nl">forState</span><span class="p">:</span><span class="n">UIControlStateNormal</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">        <span class="p">[</span><span class="n">item</span> <span class="nl">setTitle</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">indexTitles</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="nl">forState</span><span class="p">:</span><span class="n">UIControlStateHighlighted</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">        <span class="p">[</span><span class="n">item</span> <span class="nl">setTitleColor</span><span class="p">:[</span><span class="n">UIColor</span> <span class="n">blueColor</span><span class="p">]</span> <span class="nl">forState</span><span class="p">:</span><span class="n">UIControlStateNormal</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">        <span class="p">[</span><span class="n">item</span> <span class="nl">setTitleColor</span><span class="p">:[</span><span class="n">UIColor</span> <span class="n">blueColor</span><span class="p">]</span> <span class="nl">forState</span><span class="p">:</span><span class="n">UIControlStateHighlighted</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">        <span class="n">item</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">clearColor</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">        <span class="n">item</span><span class="p">.</span><span class="n">titleLabel</span><span class="p">.</span><span class="n">font</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIFont</span> <span class="nl">systemFontOfSize</span><span class="p">:</span><span class="mi">12</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="p">[</span><span class="n">item</span> <span class="nl">addTarget</span><span class="p">:</span><span class="nb">self</span> <span class="nl">action</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">btnClickedDown</span><span class="p">:)</span> <span class="nl">forControlEvents</span><span class="p">:</span><span class="n">UIControlEventTouchDown</span><span class="p">];</span> <span class="c1">//只要点击
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="p">[</span><span class="n">item</span> <span class="nl">addTarget</span><span class="p">:</span><span class="nb">self</span> <span class="nl">action</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">btnTouchUpInside</span><span class="p">:)</span> <span class="nl">forControlEvents</span><span class="p">:</span><span class="n">UIControlEventTouchUpInside</span><span class="p">];</span> <span class="c1">//点击松手
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>2.响应事件的</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-Objective-C" data-lang="Objective-C"><span class="line"><span class="cl"><span class="p">-(</span><span class="kt">void</span><span class="p">)</span><span class="nf">btnClickedDown:</span><span class="p">(</span><span class="n">UIButton</span> <span class="o">*</span><span class="p">)</span><span class="nv">sender</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//1. 获取当前sectionTitle的frame
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">CGRect</span> <span class="n">currentSectionTitleRect</span> <span class="o">=</span> <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">tableView</span> <span class="nl">rectForSection</span><span class="p">:</span><span class="n">sender</span><span class="p">.</span><span class="n">tag</span><span class="o">-</span><span class="mi">100</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//2. 把tableView当前section滚动到top (不要动画效果更好)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">tableView</span> <span class="nl">setContentOffset</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="n">currentSectionTitleRect</span><span class="p">.</span><span class="n">origin</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">currentSectionTitleRect</span><span class="p">.</span><span class="n">origin</span><span class="p">.</span><span class="n">y</span><span class="p">)</span> <span class="nl">animated</span><span class="p">:</span><span class="nb">NO</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//3. 把当前的index放大显示到屏幕中间
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">NSString</span> <span class="o">*</span><span class="n">currentIndexStr</span> <span class="o">=</span> <span class="n">sender</span><span class="p">.</span><span class="n">titleLabel</span><span class="p">.</span><span class="n">text</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">self</span><span class="p">.</span><span class="n">currentIndexShowLB</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">currentIndexStr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//4. 处理indexStr
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">currentIndexStr</span><span class="p">.</span><span class="n">length</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">self</span><span class="p">.</span><span class="n">currentIndexShowLB</span><span class="p">.</span><span class="n">font</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIFont</span> <span class="nl">systemFontOfSize</span><span class="p">:</span><span class="mi">35</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">self</span><span class="p">.</span><span class="n">currentIndexShowLB</span><span class="p">.</span><span class="n">font</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIFont</span> <span class="nl">systemFontOfSize</span><span class="p">:</span><span class="mi">18</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//5. 屏幕中间显示当前index
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nb">self</span><span class="p">.</span><span class="n">currentIndexShowLB</span><span class="p">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="nb">NO</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">-(</span><span class="kt">void</span><span class="p">)</span><span class="nf">btnTouchUpInside:</span><span class="p">(</span><span class="n">UIButton</span> <span class="o">*</span><span class="p">)</span><span class="nv">sender</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//该方法是在btnClickedDown后执行
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nb">self</span><span class="p">.</span><span class="n">currentIndexShowLB</span><span class="p">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#pragma mark --- 添加平移手势
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="p">-(</span><span class="kt">void</span><span class="p">)</span><span class="nf">addPanGesture</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">UIPanGestureRecognizer</span> <span class="o">*</span><span class="n">panGR</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIPanGestureRecognizer</span> <span class="n">alloc</span><span class="p">]</span><span class="nl">initWithTarget</span><span class="p">:</span><span class="nb">self</span> <span class="nl">action</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">panAction</span><span class="p">:)];</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="nb">self</span> <span class="nl">addGestureRecognizer</span><span class="p">:</span><span class="n">panGR</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">-(</span><span class="kt">void</span><span class="p">)</span><span class="nf">panAction:</span><span class="p">(</span><span class="n">UIPanGestureRecognizer</span> <span class="o">*</span><span class="p">)</span><span class="nv">panGR</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//1. 获取手指当前位置的point
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">CGPoint</span> <span class="n">fingerTapPoint</span> <span class="o">=</span> <span class="p">[</span><span class="n">panGR</span> <span class="nl">locationInView</span><span class="p">:</span><span class="nb">self</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//2. 遍历self上的所有自视图（UIButton *）,如果它的tag和上次不一样，执行touchDown方法
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="n">aV</span> <span class="k">in</span> <span class="nb">self</span><span class="p">.</span><span class="n">subviews</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">([</span><span class="n">aV</span> <span class="nl">isKindOfClass</span><span class="p">:[</span><span class="n">UIButton</span> <span class="k">class</span><span class="p">]]</span> <span class="o">&amp;&amp;</span> <span class="n">aV</span><span class="p">.</span><span class="n">tag</span> <span class="o">!=</span> <span class="n">_selectedBtnTag</span> <span class="o">&amp;&amp;</span> <span class="n">CGRectContainsPoint</span><span class="p">(</span><span class="n">aV</span><span class="p">.</span><span class="n">frame</span><span class="p">,</span> <span class="n">fingerTapPoint</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">_selectedBtnTag</span> <span class="o">=</span> <span class="n">aV</span><span class="p">.</span><span class="n">tag</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">[</span><span class="nb">self</span> <span class="nl">btnClickedDown</span><span class="p">:(</span><span class="n">UIButton</span> <span class="o">*</span><span class="p">)</span><span class="n">aV</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1">//3. 手势结束时，隐藏屏幕中间的showIndexLB
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">panGR</span><span class="p">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">UIGestureRecognizerStateEnded</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">self</span><span class="p">.</span><span class="n">currentIndexShowLB</span><span class="p">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>至此，想要的功能算是实现了，但是文章一开始提到的bug也出现了，😜。</p>
+<h3 id="第三步解决bug">第三步：解决<code>Bug</code></h3>
+<blockquote>
+<p><strong>关键：<code>tableView</code>的<code>Category</code></strong></p>
+</blockquote>
+<p><strong><code>runtime</code>方案的实现步骤如下：</strong></p>
+<ol>
+<li>拦截<code>UITableView</code>的系统<code>setDelegate</code>，用<code>pp_setDelegate</code>替换；</li>
+<li>判断<code>delegate</code>是否响应系统的<code>tableView:didSelectRowAtIndexPath:</code> ，如果响应才能继续<code>3</code>；</li>
+<li>根据系统的代理<code>tableView:didSelectRowAtIndexPath:</code> 方法和对应的指针给代理类<code>[delegate class]</code>利用<code>runtime</code>的<code>class_addMethod</code>添加一个<code>didSelected</code>方法<code>@selector(pp_fakeTableView:didSelectRowAtIndexPath:)</code>，并替换为<code>pp_tableView:didSelectRowAtIndexPath:</code>.</li>
+<li>利用<code>NSInvocation</code>在替换的<code>didSelected</code>方法<code>pp_tableView:didSelectRowAtIndexPath:</code>中调用<code>pp_fakeTableView:didSelectRowAtIndexPath:</code>,因为<code>pp_fakeTableView:didSelectRowAtIndexPath:</code>和系统的<code>tableView:didSelectRowAtIndexPath:</code>指针指向相同，所以就相当于调用系统的<code>tableView:didSelectRowAtIndexPath:</code>，这样就实现了我们的需求。</li>
+</ol>
+<p>我怕我说明的不清楚，特意画了个图：</p>
+<p><img src="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/UGC/20171231/002.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<p>代码如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span><span class="lnt">83
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-Objective-C" data-lang="Objective-C"><span class="line"><span class="cl"><span class="c1">///**
+</span></span></span><span class="line"><span class="cl"><span class="c1">// * 通过给定的方法名和实现，动态给类添加一个方法
+</span></span></span><span class="line"><span class="cl"><span class="c1">// *
+</span></span></span><span class="line"><span class="cl"><span class="c1">// * @param cls   要添加方法的类.
+</span></span></span><span class="line"><span class="cl"><span class="c1">// * @param name  指定了方法名的要添加到类的方法.
+</span></span></span><span class="line"><span class="cl"><span class="c1">// * @param imp   添加方法的函数实现（函数地址).
+</span></span></span><span class="line"><span class="cl"><span class="c1">// * @param types 函数的类型，(返回值+参数类型).
+</span></span></span><span class="line"><span class="cl"><span class="c1">// *
+</span></span></span><span class="line"><span class="cl"><span class="c1">// * @return      如果添加成功就返回YES，失败返回NO（如果该类中已经存在一个相同的方法名的方法实现）.
+</span></span></span><span class="line"><span class="cl"><span class="c1">// *
+</span></span></span><span class="line"><span class="cl"><span class="c1">// * @note        注: class_addMethod将重写父类的实现，但是不会替换该类中已经有的实现，
+</span></span></span><span class="line"><span class="cl"><span class="c1">//                如果想改变该类中已有的实现，请使用method_setImplementation
+</span></span></span><span class="line"><span class="cl"><span class="c1">// */
+</span></span></span><span class="line"><span class="cl"><span class="c1">//OBJC_EXPORT BOOL class_addMethod(Class cls, SEL name, IMP imp,const char * types)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="p">-(</span><span class="kt">void</span><span class="p">)</span><span class="nf">pp_setDelegate:</span><span class="p">(</span><span class="kt">id</span><span class="o">&lt;</span><span class="n">UITableViewDelegate</span><span class="o">&gt;</span><span class="p">)</span><span class="nv">delegate</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="n">delegate</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//系统原生的didSelected方法
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kt">SEL</span> <span class="n">systemDidSelectedSelector</span> <span class="o">=</span> <span class="k">@selector</span><span class="p">(</span><span class="nl">tableView</span><span class="p">:</span><span class="nl">didSelectRowAtIndexPath</span><span class="p">:);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//我自己重写的didSelected方法（用于替换系统的）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kt">SEL</span> <span class="n">ppDidSelectedSelector</span>     <span class="o">=</span> <span class="k">@selector</span><span class="p">(</span><span class="nl">pp_tableView</span><span class="p">:</span><span class="nl">didSelectRowAtIndexPath</span><span class="p">:);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//VIP：假的didSelected方法（和系统原生的didSelected方法指针地址相同，但不是一个方法，却响应同样事件）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kt">SEL</span> <span class="n">fakeDidSelectedSelector</span>   <span class="o">=</span> <span class="k">@selector</span><span class="p">(</span><span class="nl">pp_fakeTableView</span><span class="p">:</span><span class="nl">didSelectRowAtIndexPath</span><span class="p">:);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">([</span><span class="n">delegate</span> <span class="nl">respondsToSelector</span><span class="p">:</span><span class="n">systemDidSelectedSelector</span><span class="p">])</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            <span class="c1">//系统的代理didSelected方法和对应的指针
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">Method</span> <span class="n">systemDidSelectedMethod</span> <span class="o">=</span> <span class="n">class_getInstanceMethod</span><span class="p">([</span><span class="n">delegate</span> <span class="k">class</span><span class="p">],</span> <span class="k">@selector</span><span class="p">(</span><span class="nl">tableView</span><span class="p">:</span><span class="nl">didSelectRowAtIndexPath</span><span class="p">:));</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">IMP</span> <span class="n">systemDidSelectedMethodIMP</span> <span class="o">=</span> <span class="n">method_getImplementation</span><span class="p">(</span><span class="n">systemDidSelectedMethod</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            <span class="c1">//VIP：此处给系统原生的didSelected方法上添加新的方法（只要方法名不一样，就可以成功，详见系统api中的@return说明）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="c1">//注意此方法放置位置，不能放在下面的class_replaceMethod后面（因为已经被替换了，指针会指向tableView *的pp_tableView:didSelectRowAtIndexPath:）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">class_addMethod</span><span class="p">([</span><span class="n">delegate</span> <span class="k">class</span><span class="p">],</span> <span class="n">fakeDidSelectedSelector</span><span class="p">,</span> <span class="n">systemDidSelectedMethodIMP</span><span class="p">,</span> <span class="n">method_getTypeEncoding</span><span class="p">(</span><span class="n">systemDidSelectedMethod</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="c1">//自己重写的didSelected，用来处理拦截后想做的事情（比如：发通知，block回调等）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">Method</span> <span class="n">ppDidSelectedMethod</span> <span class="o">=</span> <span class="n">class_getInstanceMethod</span><span class="p">([</span><span class="nb">self</span> <span class="k">class</span><span class="p">],</span> <span class="n">ppDidSelectedSelector</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">IMP</span> <span class="n">ppDidSelectedMethodIMP</span> <span class="o">=</span> <span class="n">method_getImplementation</span><span class="p">(</span><span class="n">ppDidSelectedMethod</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            <span class="c1">//用自己重写的替换系统原生的
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">class_replaceMethod</span><span class="p">([</span><span class="n">delegate</span> <span class="k">class</span><span class="p">],</span> <span class="n">systemDidSelectedSelector</span><span class="p">,</span> <span class="n">ppDidSelectedMethodIMP</span><span class="p">,</span> <span class="n">method_getTypeEncoding</span><span class="p">(</span><span class="n">systemDidSelectedMethod</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//拦截原生的delegate，别忘了调用（此处调用pp_setDelegate:实际上就是调用setDelegate:，说句不该说的话，此处看不懂，runtime你根本不会）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">[</span><span class="nb">self</span> <span class="nl">pp_setDelegate</span><span class="p">:</span><span class="n">delegate</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">-(</span><span class="kt">void</span><span class="p">)</span><span class="nf">pp_tableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">didSelectRowAtIndexPath:</span><span class="p">(</span><span class="n">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexPath</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//方案(通知)都用的到的通知，很显然太费事，不方便
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">    NSNotification *not = [[NSNotification alloc]initWithName:PPTableViewDidSelectedNotificationKey object:nil userInfo:nil];
+</span></span></span><span class="line"><span class="cl"><span class="cm">    [[NSNotificationCenter defaultCenter]postNotification:not];
+</span></span></span><span class="line"><span class="cl"><span class="cm">     */</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1">//方案（runtime）：给tableView添加点击block，。。。。嗯，有没有想到更多？？简化所有的delegate与dataSource方法，此处不说太多
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">tableView</span><span class="p">.</span><span class="n">pp_didSelectedBlock</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">tableView</span><span class="p">.</span><span class="n">pp_didSelectedBlock</span><span class="p">(</span><span class="n">tableView</span><span class="p">,</span> <span class="n">indexPath</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1">//VIP: 此时，系统原生的didSelected方法已经被拦截，并且做了你想做的事情，可是怎么让系统原生的didSelected还能响应点击？
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">     方案一： 不用class_addMethod方法，而是在[delegate respondsToSelector:systemDidSelectedSelector]条件语句里
+</span></span></span><span class="line"><span class="cl"><span class="cm">     添加代理绑定：
+</span></span></span><span class="line"><span class="cl"><span class="cm">     objc_setAssociatedObject(PPTableViewDidSelectedNotificationKey, @selector(pp_tableView:didSelectRowAtIndexPath:), delegate, OBJC_ASSOCIATION_RETAIN);
+</span></span></span><span class="line"><span class="cl"><span class="cm">     然后在此处，执行：
+</span></span></span><span class="line"><span class="cl"><span class="cm">     id ppDelegate = objc_getAssociatedObject(PPTableViewDidSelectedNotificationKey, _cmd);
+</span></span></span><span class="line"><span class="cl"><span class="cm">     [ppDelegate pp_tableView:tableView didSelectRowAtIndexPath:indexPath];
+</span></span></span><span class="line"><span class="cl"><span class="cm">     哦😯，傻了，这相当于直接调用系统的didSelected方法，/(ㄒoㄒ)/~~，错！错！错！
+</span></span></span><span class="line"><span class="cl"><span class="cm">     */</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1">//方案二：利用NSInvocation底层发消息，如下：
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">SEL</span> <span class="n">fakeDidSelectedSelector</span> <span class="o">=</span> <span class="k">@selector</span><span class="p">(</span><span class="nl">pp_fakeTableView</span><span class="p">:</span><span class="nl">didSelectRowAtIndexPath</span><span class="p">:);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">NSMethodSignature</span> <span class="o">*</span><span class="n">methodSignature</span> <span class="o">=</span> <span class="p">[[</span><span class="n">tableView</span><span class="p">.</span><span class="n">delegate</span> <span class="k">class</span><span class="p">]</span><span class="nl">instanceMethodSignatureForSelector</span><span class="p">:</span><span class="n">fakeDidSelectedSelector</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">methodSignature</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//可以抛出异常也可以不操作。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">NSInvocation</span> <span class="o">*</span><span class="n">invocation</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSInvocation</span> <span class="nl">invocationWithMethodSignature</span><span class="p">:</span><span class="n">methodSignature</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="n">invocation</span><span class="p">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">tableView</span><span class="p">.</span><span class="n">delegate</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">invocation</span><span class="p">.</span><span class="n">selector</span> <span class="o">=</span> <span class="n">fakeDidSelectedSelector</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="n">invocation</span> <span class="n">retainArguments</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="n">invocation</span> <span class="n">invoke</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>2017年最后一天了，一首歌共勉：</strong>
+<img src="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/UGC/20171231/003.jpeg"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/runtime/">runtime</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">相关文章</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/p/20230606/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/BlogCover/2021/20210502.jpeg" loading="lazy" data-key="20230606" data-hash="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/BlogCover/2021/20210502.jpeg"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">设置符号断点（Symbolic Breakpoint）的几种方式</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/p/ios-ios15-uibutton-update-api/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/BlogCover/2021/20211016.jpeg" loading="lazy" data-key="ios-ios15-uibutton-update-api" data-hash="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/BlogCover/2021/20211016.jpeg"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">iOS15终于迎来了UIButton的这个改动！</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/p/20210502/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/BlogCover/2021/20210502.jpeg" loading="lazy" data-key="20210502" data-hash="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/BlogCover/2021/20210502.jpeg"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">iOS代码块（CodeSnippets）你值得拥有：大大提升编码效率</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/p/ios%E9%93%BE%E5%BC%8F%E5%88%9B%E5%BB%BAui%E7%BB%88%E7%BB%93%E8%80%85-ppmaker/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/BlogCover/2018/20180509.jpeg" loading="lazy" data-key="" data-hash="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/BlogCover/2018/20180509.jpeg"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">iOS链式创建UI终结者 ➜ PPMaker</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/p/20180308/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/BlogCover/2018/20180308.jpeg" loading="lazy" data-key="20180308" data-hash="https://ap-hexo-blog-images.oss-cn-shanghai.aliyuncs.com/BlogCover/2018/20180308.jpeg"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">浅读MJRefresh后自定义了个UIScrollView监听滚动的block属性</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "hugo-theme-stack" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2020 - 
+        
+        2023 BobPei
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
